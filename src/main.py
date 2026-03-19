@@ -35,6 +35,33 @@ def main():
 
     st.set_page_config(page_title="研报分析 Agent", layout="wide")
 
+    # 自定义 CSS 样式，优化 markdown 展示的标题大小
+    st.markdown("""
+    <style>
+    .markdown-content h1 {
+        font-size: 1.5rem !important;
+        margin-top: 1rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    .markdown-content h2 {
+        font-size: 1.2rem !important;
+        margin-top: 0.8rem !important;
+        margin-bottom: 0.4rem !important;
+    }
+    .markdown-content h3 {
+        font-size: 1.0rem !important;
+        margin-top: 0.6rem !important;
+        margin-bottom: 0.3rem !important;
+    }
+    .markdown-content h4 {
+        font-size: 0.95rem !important;
+    }
+    .markdown-content p {
+        margin-bottom: 0.5rem !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     # 左侧历史记录侧边栏
     with st.sidebar:
         st.header("历史记录")
@@ -87,7 +114,7 @@ def main():
 
                             st.subheader("投资策略", anchor='投资策略')
                             st.markdown(
-                                f"""<div style="border: 1px solid #e5e7eb; padding: 1rem; border-radius: 0.5rem; background-color: #f9fafb;">{result_data['strategy_markdown']}</div>""",
+                                f"""<div class="markdown-content" style="border: 1px solid #e5e7eb; padding: 1rem; border-radius: 0.5rem; background-color: #f9fafb;">{result_data['strategy_markdown']}</div>""",
                                 unsafe_allow_html=True)
 
                         if 'strategy_pdf' in output:
@@ -110,7 +137,7 @@ def main():
 
                             st.subheader("阅读价值评估", anchor='阅读价值评估')
                             st.markdown(
-                                f"""<div style="border: 1px solid #e5e7eb; padding: 1rem; border-radius: 0.5rem; background-color: #f9fafb;">{result_data['read_triage_result']}</div>""",
+                                f"""<div class="markdown-content" style="border: 1px solid #e5e7eb; padding: 1rem; border-radius: 0.5rem; background-color: #f9fafb;">{result_data['read_triage_result']}</div>""",
                                 unsafe_allow_html=True)
 
                 # 保存历史记录
@@ -133,7 +160,7 @@ def main():
             if 'strategy_markdown' in result_data:
                 st.subheader("投资策略", anchor='投资策略')
                 st.markdown(
-                    f"""<div style="border: 1px solid #e5e7eb; padding: 1rem; border-radius: 0.5rem; background-color: #f9fafb;">{result_data['strategy_markdown']}</div>""",
+                    f"""<div class="markdown-content" style="border: 1px solid #e5e7eb; padding: 1rem; border-radius: 0.5rem; background-color: #f9fafb;">{result_data['strategy_markdown']}</div>""",
                     unsafe_allow_html=True)
 
             if 'strategy_pdf' in result_data and os.path.exists(result_data['strategy_pdf']):
@@ -152,7 +179,7 @@ def main():
             if 'read_triage_result' in result_data:
                 st.subheader("阅读价值评估", anchor='阅读价值评估')
                 st.markdown(
-                    f"""<div style="border: 1px solid #e5e7eb; padding: 1rem; border-radius: 0.5rem; background-color: #f9fafb;">{result_data['read_triage_result']}</div>""",
+                    f"""<div class="markdown-content" style="border: 1px solid #e5e7eb; padding: 1rem; border-radius: 0.5rem; background-color: #f9fafb;">{result_data['read_triage_result']}</div>""",
                     unsafe_allow_html=True)
 
 
