@@ -22,7 +22,7 @@
 #### 1. 克隆项目
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/ikyxxs/NifflerAgent
 cd NifflerAgent
 ```
 
@@ -199,4 +199,4 @@ NifflerAgent/
 
 ## License
 
-[MIT License](LICENSE)
+[AGPL-3.0 License](LICENSE)
