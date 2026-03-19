@@ -11,6 +11,7 @@ def format_json(content):
     优先尝试直接解析，失败后使用LLM修复
     """
     content = remove_json_markup(content)
+    content = escape_newlines_in_json_strings(content)
     
     try:
         return json.loads(content)
@@ -58,6 +59,56 @@ def remove_json_markup(content):
         return content[start:end]
     
     return content
+
+
+def escape_newlines_in_json_strings(content):
+    """
+    转义JSON字符串值中的未转义换行符
+    处理大模型生成的JSON中字符串内包含真实换行符的问题
+    """
+    if not content:
+        return content
+    
+    result = []
+    i = 0
+    in_string = False
+    escape_next = False
+    
+    while i < len(content):
+        char = content[i]
+        
+        if escape_next:
+            result.append(char)
+            escape_next = False
+            i += 1
+            continue
+        
+        if char == '\\' and in_string:
+            result.append(char)
+            escape_next = True
+            i += 1
+            continue
+        
+        if char == '"':
+            in_string = not in_string
+            result.append(char)
+            i += 1
+            continue
+        
+        if in_string and char in '\n\r\t':
+            if char == '\n':
+                result.append('\\n')
+            elif char == '\r':
+                result.append('\\r')
+            elif char == '\t':
+                result.append('\\t')
+            i += 1
+            continue
+        
+        result.append(char)
+        i += 1
+    
+    return ''.join(result)
 
 
 def fix_json(content):
