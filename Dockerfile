@@ -1,43 +1,34 @@
-FROM registry.cn-hangzhou.aliyuncs.com/brynhild/python:3.11
+FROM python:3.11-slim
 
-# 安装系统依赖（解决 libgobject 缺失问题，weasyprint要用）
-#RUN #apt-get update && apt-get install -y \
-#    gobject-introspection \
-#    libcairo2 \
-#    libpango-1.0-0 \
-#    libpangocairo-1.0-0 \
-#    fontconfig \
-#    ttf-wqy-microhei \
-#    ttf-wqy-zenhei \
-#    fonts-noto-cjk \
-#    && rm -rf /var/lib/apt/lists/* # 清理缓存,减小镜像体积
+LABEL maintainer="NifflerAgent"
+LABEL description="NifflerAgent Application"
+LABEL version="1.0"
 
-# 设置工作目录
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gobject-introspection \
+    libcairo2 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    fontconfig \
+    fonts-wqy-microhei \
+    fonts-wqy-zenhei \
+    fonts-noto-cjk \
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
 WORKDIR /app
 
-# 将当前目录的内容复制到工作目录中
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir --upgrade pip -i https://pypi.tuna.tsinghua.edu.cn/simple \
+    && pip install --no-cache-dir -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple --retries 5 --timeout 120
+
 COPY . /app
 
-# 安装项目依赖
-#RUN pip3 install fastapi
-#RUN pip3 install uvicorn
-#RUN pip3 install ipython
-#RUN pip3 install langchain
-#RUN pip3 install langchain_core
-#RUN pip3 install langchain_openai
-#RUN pip3 install langgraph
-#RUN pip3 install python-dotenv
-#RUN pip3 install Requests
-#RUN pip3 install streamlit
-#RUN pip3 install typing_extensions
-#RUN pip3 install weasyprint
+EXPOSE 8500
 
-# 开放端口
-EXPOSE 8501
+HEALTHCHECK --interval=60s --timeout=3s --start-period=40s --retries=3 \
+    CMD curl -fs http://localhost:8500/test || exit 1
 
-# 运行应用程序
-CMD ["streamlit", "run", "src/main.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
-
-# 增加HEALTHCHECK指令
-HEALTHCHECK --interval=60s --timeout=3s  --retries=3 \
-    CMD curl -fs http://localhost:8501/test || exit 1
+CMD ["streamlit", "run", "src/main.py", "--server.port", "8500", "--server.address", "0.0.0.0"]

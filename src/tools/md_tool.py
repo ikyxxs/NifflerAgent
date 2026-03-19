@@ -13,7 +13,7 @@ def markdown2pdf(file_name, md_text: str):
 
 def markdown2html(md_text: str) -> str:
     """Markdown转HTML"""
-    md = MarkdownIt().enable('table')
+    md = MarkdownIt("commonmark").enable(['table', 'list'])
     html_content = md.render(md_text)
 
     # 4. 嵌入CSS样式（美化表格、代码框等）
